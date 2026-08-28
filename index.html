@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام الصيدلية</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family: 'Tahoma', sans-serif;}
+  body{background:#f5f5f5;padding-bottom:70px;}
+.header{background:#2E7D32;color:#fff;padding:15px;text-align:center;font-size:18px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.lang-btns{position:absolute;top:10px;right:10px;}
+  [dir="ltr"].lang-btns{right:auto; left:10px;}
+.lang-btns button{background:white;color:#2E7D32;border:none;padding:5px 10px;border-radius:5px;margin:0 3px;cursor:pointer;font-weight:bold;font-size:12px;}
+.lang-btns button.active{background:#FFC107;color:#000;}
+.search-box{display:flex;gap:8px;padding:10px;background:#fff;position:sticky;top:0;z-index:10;box-shadow:0 2px 4px rgba(0,0,0,0.05);}
+.search-box input{flex:1;padding:12px 15px;border:1px solid #ddd;border-radius:20px;font-size:14px;background:#f9f9f9;}
+.doctor-btn{background:#2E7D32;color:white;border:none;padding:12px 16px;border-radius:20px;font-weight:bold;white-space:nowrap;cursor:pointer;font-size:14px;flex-shrink:0;}
+.doctor-btn:hover{background:#1B5E20;}
+.categories-section{padding:15px 12px;background:#fff;margin-bottom:8px;}
+.categories-title{font-size:16px;font-weight:bold;margin-bottom:12px;color:#333;text-align:right;}
+  [dir="ltr"].categories-title{text-align:left;}
+.categories-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.category-item{background:#E8F5E9;padding:15px;border-radius:12px;text-align:center;font-weight:bold;font-size:14px;cursor:pointer;transition:0.2s;border:2px solid #2E7D32;color:#2E7D32;}
+.category-item:hover{background:#2E7D32;color:white;}
+.category-item.active{background:#2E7D32;color:white;}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:12px;}
+.product{background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:relative;display:flex;flex-direction:column;transition: transform 0.2s;}
+.product:hover{transform: translateY(-3px);}
+.product img{width:100%;height:200px;object-fit: contain;border-radius:8px;margin-bottom:8px;background:#ffffff;padding:8px;border: 1px solid #f0f0f0;}
+.product-actions{display:flex;gap:8px;margin-top:10px;}
+.heart{background:#fff;border:2px solid #2E7D32;border-radius:8px;width:45px;height:45px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#999;cursor:pointer;transition: all 0.2s;flex-shrink:0;}
+.heart.active{color:#f44336;border-color:#f44336;background:#ffebee;}
+.chat-product-btn{background:#25D366;color:#fff;border:none;border-radius:8px;width:45px;height:45px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;}
+.add-btn{flex:1;background:#2E7D32;color:#fff;border:none;padding:11px;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;}
+.add-btn:hover{background:#1B5E20;}
+.product-info{text-align:right;}
+  [dir="ltr"].product-info{text-align:left;}
+.product-info h3{font-size:14px;margin-bottom:5px;color:#333;height:38px;overflow:hidden;line-height:1.4;font-weight:bold;}
+.product-description{font-size:13px;color:#666;margin-bottom:8px;line-height:1.5;height:35px;overflow:hidden;} /* هذا الجديد مال الوصف */
+.price{color:#2E7D32;font-weight:bold;font-size:17px;margin-bottom:5px;}
+.stock{font-size:12px;color:#666;margin-bottom:10px;}
+.no-result{text-align:center;padding:50px 20px;color:#999;font-size:16px;font-weight:bold;grid-column:1/3;display:none;}
+.cart-page{display:none;padding:15px;}
+.cart-title{text-align:center;font-size:18px;font-weight:bold;margin-bottom:15px;color:#2E7D32;}
+.cart-item{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.delete-btn{background:#f44336;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;}
+.total{text-align:left;font-size:18px;font-weight:bold;margin:15px 0;color:#2E7D32;}
+  [dir="rtl"].total{text-align:right;}
+.order-btn{background:#25D366;color:#fff;border:none;width:100%;padding:15px;border-radius:10px;font-size:16px;font-weight:bold;margin-bottom:10px;cursor:pointer;}
+.empty-cart{text-align:center;color:#999;padding:50px 0;font-size:16px;}
+.profile-page{display:none;padding:20px;text-align:center;}
+.profile-logo{font-size:60px;margin-bottom:15px;}
+.profile-name{font-size:22px;font-weight:bold;color:#2E7D32;margin-bottom:10px;}
+.profile-info{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px;text-align:right;}
+  [dir="ltr"].profile-info{text-align:left;}
+.profile-info p{margin-bottom:8px;font-size:14px;color:#333;}
+.footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;border-top:2px solid #2E7D32;box-shadow:0 -2px 5px rgba(0,0,0,0.05);}
+.footer-item{text-align:center;font-size:11px;color:#888;text-decoration:none;cursor:pointer;position:relative;transition:0.2s;}
+.footer-item.active{color:#2E7D32;font-weight:bold;}
+.footer-item.active span{transform: scale(1.1);}
+.footer-item span{font-size:22px;display:block;transition:0.2s;}
+.cart-count{background:#f44336;color:#fff;border-radius:50%;font-size:10px;padding:2px 5px;position:absolute;top:0;right:5px;}
+  [dir="ltr"].cart-count{right:auto; left:5px;}
+</style>
+</head>
+<body>
+
+<div class="header" id="headerTitle">
+  نصائح صحية اليوم
+  <div class="lang-btns">
+    <button onclick="changeLang('ar')" id="btn-ar">AR</button>
+    <button onclick="changeLang('ku')" id="btn-ku">KU</button>
+    <button onclick="changeLang('en')" id="btn-en">EN</button>
+  </div>
+</div>
+
+<div class="search-box" id="searchBox">
+  <input type="text" id="searchInput" placeholder="ابحث عن دواء..." oninput="searchProducts()">
+  <button onclick="openChat()" class="doctor-btn" id="askBtn">اسأل 💬</button>
+</div>
+
+<div class="categories-section" id="categoriesSection">
+  <div class="categories-title" id="catTitle">الفئات</div>
+  <div class="categories-grid">
+    <div class="category-item" id="cat-مسكنات" onclick="filterByCategory('مسكنات')">💊 <span data-key="painkillers">مسكنات</span></div>
+    <div class="category-item" id="cat-فيتامينات" onclick="filterByCategory('فيتامينات')">🍊 <span data-key="vitamins">فيتامينات</span></div>
+    <div class="category-item" id="cat-اطفال" onclick="filterByCategory('اطفال')">👶 <span data-key="kids">عناية الاطفال</span></div>
+    <div class="category-item" id="cat-عناية" onclick="filterByCategory('عناية')">✨ <span data-key="care">عناية شخصية</span></div>
+  </div>
+</div>
+
+<div class="products" id="products">
+  <div id="loadingMsg" style="text-align:center;padding:30px;color:#999;grid-column:1/3;">جاري تحميل المنتجات...</div>
+  <div class="no-result" id="noResult">ما لقينا النتيجة 😔</div>
+</div>
+
+<div class="cart-page" id="cartPage">
+  <h2 class="cart-title" id="cartPageTitle">سلة المشتريات 🛒</h2>
+  <div id="cartItems"></div>
+  <div class="total" id="cartTotal">الاجمالي: 0 د</div>
+  <button class="order-btn" id="orderBtn" onclick="orderWhatsApp()">اطلب عبر واتساب 📱</button>
+</div>
+
+<div class="profile-page" id="profilePage">
+  <div class="profile-logo">🏥</div>
+  <div class="profile-name" id="profileName">نظام الصيدلية</div>
+  <div class="profile-info">
+    <p>📱 <b id="whatsLabel">الواتساب:</b> 07502458975</p>
+    <p>📍 <b id="addrLabel">العنوان:</b> <span id="address">زاخو - شارع السوق</span></p>
+    <p>⏰ <b id="timeLabel">ساعات الدوام:</b> <span id="worktime">8 صباحاً - 12 ليلاً</span></p>
+    <p>🚚 <b id="deliveryLabel">التوصيل:</b> <span id="delivery">داخل زاخو مجاني</span></p>
+  </div>
+</div>
+
+<div class="footer">
+  <a class="footer-item active" onclick="showHome()"><span>🏠</span><br><span id="nav-home">الرئيسية</span></a>
+  <a class="footer-item" onclick="showCategories()"><span>📂</span><br><span id="nav-cat">الفئات</span></a>
+  <a class="footer-item" onclick="showFavorites()"><span>❤️</span><br><span id="nav-fav">المفضلة</span></a>
+  <a class="footer-item" onclick="showCart()"><span>🛍️</span><br><span id="nav-cart">السلة</span> <span class="cart-count" id="cartCount" style="display:none;">0</span></a>
+  <a class="footer-item" onclick="showProfile()"><span>🧑</span><br><span id="nav-profile">صفحتي</span></a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBlz1KrWEYEFc0XlCwnQks5M6jynobC3Q",
+  authDomain: "pharmacy-app-8e0d8.firebaseapp.com",
+  projectId: "pharmacy-app-8e0d8",
+  storageBucket: "pharmacy-app-8e0d8.appspot.com",
+  messagingSenderId: "1096962693323",
+  appId: "1:1096962693323:web:cd00fe04f83b50c173234e"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let cart = [];
+let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+let allProducts = [];
+let selectedCategory = null;
+let currentLang = localStorage.getItem('lang') || 'ar';
+
+const translations = {
+  ar: {dir:"rtl", title:"نصائح صحية اليوم", search:"ابحث عن دواء...", askDoctor:"اسأل 💬", categories:"الفئات", home:"الرئيسية", favorites:"المفضلة", cart:"السلة", profile:"صفحتي", addToCart:"اضافة للسلة", stock:"المخزون:", total:"الاجمالي:", order:"اطلب عبر واتساب 📱", loading:"جاري تحميل المنتجات...", noResult:"ما لقينا النتيجة 😔", emptyCart:"السلة فارغة", painkillers:"مسكنات", vitamins:"فيتامينات", kids:"عناية الاطفال", care:"عناية شخصية", whatsapp:"الواتساب:", address:"العنوان:", worktime:"ساعات الدوام:", delivery:"التوصيل:", addrValue:"زاخو - شارع السوق", timeValue:"8 صباحاً - 12 ليلاً", deliveryValue:"داخل زاخو مجاني", cartPageTitle:"سلة المشتريات 🛒"},
+  ku: {dir:"rtl", title:"سەرنجی تەندروستی ئەمڕۆ", search:"گەڕان بۆ دەرمان...", askDoctor:"بپرسە 💬", categories:"پۆلەکان", home:"سەرەکی", favorites:"دڵخوازەکان", cart:"سله", profile:"پەڕەی من", addToCart:"زیادکردن بۆ سلە", stock:"کۆگا:", total:"کۆی گشتی:", order:"داواکردن لە واتساب 📱", loading:"بەرهەمەکان بار دەکرێن...", noResult:"هیچ ئەنجامێک نەدۆزرایەوە 😔", emptyCart:"سله بەتاڵ", painkillers:"ئازارشکێن", vitamins:"ڤیتامین", kids:"خاوێنی منداڵ", care:"خاوێنی کەسی", whatsapp:"واتساب:", address:"ناونیشان:", worktime:"کاتژمێری کار:", delivery:"گەیاندن:", addrValue:"زاخۆ - شەقامی بازاڕ", timeValue:"8 بەیانی - 12 شەو", deliveryValue:"لەناو زاخۆ خۆڕاییە", cartPageTitle:"سله ی کڕین 🛒"},
+  en: {dir:"ltr", title:"Health Tips Today", search:"Search for medicine...", askDoctor:"Ask Doctor 💬", categories:"Categories", home:"Home", favorites:"Favorites", cart:"Cart", profile:"Profile", addToCart:"Add to Cart", stock:"Stock:", total:"Total:", order:"Order via WhatsApp 📱", loading:"Loading products...", noResult:"No results found 😔", emptyCart:"Cart is empty", painkillers:"Painkillers", vitamins:"Vitamins", kids:"Baby Care", care:"Personal Care", whatsapp:"WhatsApp:", address:"Address:", worktime:"Working Hours:", delivery:"Delivery:", addrValue:"Zakho - Market Street", timeValue:"8 AM - 12 PM", deliveryValue:"Free delivery in Zakho", cartPageTitle:"Shopping Cart 🛒"}
+};
+
+function applyTranslations(){
+  let t = translations[currentLang];
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = t.dir;
+
+  document.getElementById('headerTitle').childNodes[0].nodeValue = t.title;
+  document.getElementById('searchInput').placeholder = t.search;
+  document.getElementById('askBtn').innerText = t.askDoctor;
+  document.getElementById('catTitle').innerText = t.categories;
+  document.getElementById('loadingMsg').innerText = t.loading;
+  document.getElementById('noResult').innerText = t.noResult;
+  document.getElementById('cartPageTitle').innerText = t.cartPageTitle;
+  document.getElementById('orderBtn').innerText = t.order;
+  document.getElementById('profileName').innerText = t.title;
+  document.getElementById('whatsLabel').innerText = t.whatsapp;
+  document.getElementById('addrLabel').innerText = t.address;
+  document.getElementById('timeLabel').innerText = t.worktime;
+  document.getElementById('deliveryLabel').innerText = t.delivery;
+  document.getElementById('address').innerText = t.addrValue;
+  document.getElementById('worktime').innerText = t.timeValue;
+  document.getElementById('delivery').innerText = t.deliveryValue;
+
+  document.getElementById('nav-home').innerText = t.home;
+  document.getElementById('nav-cat').innerText = t.categories;
+  document.getElementById('nav-fav').innerText = t.favorites;
+  document.getElementById('nav-cart').innerText = t.cart;
+  document.getElementById('nav-profile').innerText = t.profile;
+
+  document.querySelectorAll('[data-key="painkillers"]').forEach(el=>el.innerText=t.painkillers);
+  document.querySelectorAll('[data-key="vitamins"]').forEach(el=>el.innerText=t.vitamins);
+  document.querySelectorAll('[data-key="kids"]').forEach(el=>el.innerText=t.kids);
+  document.querySelectorAll('[data-key="care"]').forEach(el=>el.innerText=t.care);
+
+  document.querySelectorAll('.lang-btns button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+currentLang).classList.add('active');
+}
+
+function changeLang(lang){
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  applyTranslations();
+  applyFilters();
+}
+
+function loadProducts() {
+ db.collection("products").onSnapshot((snapshot) => {
+    allProducts = [];
+    snapshot.forEach(doc => {
+      let data = doc.data();
+      data.id = String(doc.id);
+      allProducts.push(data);
+    });
+    applyFilters();
+  });
+}
+
+function applyFilters(){
+  let productsToShow = allProducts;
+
+  if(selectedCategory){
+    productsToShow = productsToShow.filter(p => p.category === selectedCategory);
+  }
+
+  let searchText = document.getElementById('searchInput').value.toLowerCase();
+  if(searchText){
+    productsToShow = productsToShow.filter(p => {
+      let name = p['name_'+currentLang] || p.name || "";
+      return name.toLowerCase().includes(searchText)
+    });
+  }
+  displayProducts(productsToShow);
+}
+
+function displayProducts(products) {
+  let productsDiv = document.getElementById('products');
+  document.getElementById('loadingMsg').style.display = 'none';
+  if(products.length === 0) {
+    productsDiv.innerHTML = `<div id="loadingMsg" style="display:none;"></div><div class="no-result" id="noResult" style="display:block;">${translations[currentLang].noResult}</div>`;
+    return;
+  }
+  let html = `<div id="loadingMsg" style="display:none;"></div><div class="no-result" id="noResult">ما لقينا النتيجة 😔</div>`;
+  products.forEach(p => {
+    let isFav = favorites.includes(String(p.id))? 'active' : '';
+    let name = p['name_'+currentLang] || p.name || "";
+    let desc = p['description_'+currentLang] || p.description || ""; // هذا الجديد
+    html += `<div class="product" data-name="${name.toLowerCase()}">
+      <img src="${p.image || 'https://via.placeholder.com/300x300/FFFFFF/2E7D32?text=Pharmacy'}">
+      <div class="product-info">
+      <h3>${p['name_' + currentLang] || p.name}</h3>
+      <p class="product-description">${desc}</p> <!-- وهذا الجديد -->
+        <p class="price">${p.price.toLocaleString()} د</p>
+        <p class="stock">${translations[currentLang].stock} ${p.stock || 0}</p>
+      </div>
+      <div class="product-actions">
+        <button class="heart ${isFav}" onclick="toggleFavorite('${p.id}')">❤️</button>
+        <button class="chat-product-btn" onclick="chatAboutProduct('${name}')">💬</button>
+        <button class="add-btn" onclick="addToCart('${p.id}')">${translations[currentLang].addToCart}</button>
+      </div>
+      </div>`;
+  });
+  productsDiv.innerHTML = html;
+}
+
+function chatAboutProduct(name){
+  let msg = currentLang=='ku'? `سڵاو، دەمەوێت لێکۆڵینەوە لەسەر دەرمان: ${name}` : currentLang=='en'? `Hello, I want to inquire about medicine: ${name}` : `مرحبا، اريد استفسر عن دواء: ${name}`;
+  window.open(`https://wa.me/9647502458975?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function toggleFavorite(id){
+  id = String(id);
+  if(favorites.includes(id)){
+    favorites = favorites.filter(f => f!= id);
+  } else {
+    favorites.push(id);
+  }
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  applyFilters();
+}
+
+function searchProducts(){
+  applyFilters();
+}
+
+function addToCart(productId){
+  let product = allProducts.find(p => String(p.id) == String(productId));
+  if(!product) return;
+  let name = product['name_'+currentLang] || product.name;
+  let item = cart.find(i => i.id == productId);
+  if(item){ item.qty += 1; } else { cart.push({id: product.id, name: name, price: product.price, qty: 1}); }
+  updateCartCount();
+  alert(name + ' ✅');
+}
+
+function updateCartCount(){
+  let count = cart.reduce((t,i)=>t+i.qty,0);
+  document.getElementById('cartCount').innerText = count;
+  document.getElementById('cartCount').style.display = count > 0? 'inline' : 'none';
+}
+
+function filterByCategory(cat){
+  if(selectedCategory === cat){
+    selectedCategory = null;
+  } else {
+    selectedCategory = cat;
+  }
+  document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+  if(selectedCategory){
+    document.getElementById('cat-' + selectedCategory).classList.add('active');
+    document.getElementById('headerTitle').childNodes[0].nodeValue = selectedCategory;
+  } else {
+    document.getElementById('headerTitle').childNodes[0].nodeValue = translations[currentLang].title;
+  }
+  applyFilters();
+  showHome();
+}
+
+function showCategories(){ hideAll(); document.getElementById('products').style.display='grid'; document.getElementById('searchBox').style.display='flex'; document.getElementById('categoriesSection').style.display='block'; document.getElementById('headerTitle').childNodes[0].nodeValue=translations[currentLang].categories; setActive(1); }
+
+function showCart(){ hideAll(); document.getElementById('cartPage').style.display='block'; document.getElementById('categoriesSection').style.display='none'; document.getElementById('headerTitle').childNodes[0].nodeValue=translations[currentLang].cart; renderCart(); setActive(3); }
+
+function showFavorites(){
+  hideAll();
+  document.getElementById('products').style.display='grid';
+  document.getElementById('categoriesSection').style.display='none';
+  document.getElementById('headerTitle').childNodes[0].nodeValue=translations[currentLang].favorites + ' ❤️';
+  document.getElementById('searchBox').style.display = 'none';
+  setActive(2);
+  let favProducts = allProducts.filter(p=>favorites.includes(String(p.id)));
+  displayProducts(favProducts);
+}
+
+function showProfile(){ hideAll(); document.getElementById('profilePage').style.display='block'; document.getElementById('categoriesSection').style.display='none'; document.getElementById('headerTitle').childNodes[0].nodeValue=translations[currentLang].profile; setActive(4); }
+
+function showHome(){
+  hideAll();
+  document.getElementById('products').style.display='grid';
+  document.getElementById('searchBox').style.display='flex';
+  document.getElementById('categoriesSection').style.display='none';
+  if(!selectedCategory){
+    document.getElementById('headerTitle').childNodes[0].nodeValue=translations[currentLang].title;
+  }
+  applyFilters();
+  setActive(0);
+}
+
+function hideAll(){ document.getElementById('products').style.display='none'; document.getElementById('cartPage').style.display='none'; document.getElementById('profilePage').style.display='none'; document.getElementById('searchBox').style.display='none'; }
+function setActive(n){ document.querySelectorAll('.footer-item').forEach((el,i)=>{ el.classList.remove('active'); if(i==n) el.classList.add('active'); }) }
+function renderCart(){let d=document.getElementById('cartItems');let t=0;let tr=translations[currentLang];if(cart.length==0){d.innerHTML=`<div class="empty-cart">${tr.emptyCart}</div>`;}else{d.innerHTML='';cart.forEach((i,idx)=>{t+=i.price*i.qty;d.innerHTML+=`<div class="cart-item"><div><b>${i.name}</b><br>${i.price.toLocaleString()} د x ${i.qty}</div><button class="delete-btn" onclick="removeItem(${idx})">حذف</button></div>`;});}document.getElementById('cartTotal').innerText=`${tr.total} ${t.toLocaleString()} د`;}
+function removeItem(i){cart.splice(i,1);renderCart();updateCartCount();}
+function orderWhatsApp(){if(cart.length==0){alert(translations[currentLang].emptyCart);return;}let m='مرحبا صيدلية، اريد اطلب:\n\n';cart.forEach(i=>{m+=`${i.name} x ${i.qty} = ${(i.price*i.qty).toLocaleString()} د\n`;});let t=cart.reduce((s,i)=>s+i.price*i.qty,0);m+=`\nالاجمالي: ${t.toLocaleString()} د`;window.open(`https://wa.me/9647502458975?text=${encodeURIComponent(m)}`,'_blank');}
+function openChat(){
+  let msg = currentLang=='ku'? "سڵاو دکتۆر، پرسیارم هەیە سەبارەت بە..." : currentLang=='en'? "Hello Doctor, I have a question about..." : "السلام عليكم دكتور اريد استشارة بخصوص...";
+  window.open(`https://wa.me/9647502458975?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+applyTranslations(); // يطبق اللغة المحفوظة
+loadProducts();
+</script>
+</body>
+</html>
